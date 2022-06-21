@@ -4,8 +4,9 @@ library(doParallel)
 library(caret)
 library(data.table)
 
-source("loocv.R")
-source("lotocv.R")
+source("bin/testHyperparameters.R")
+source("bin/loocv.R")
+source("bin/lotocv.R")
 
 
 # Load Data
