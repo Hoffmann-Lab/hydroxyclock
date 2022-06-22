@@ -24,7 +24,7 @@ testAlphas <- function(X, Y, sample_info, k_outer, k_inner, family, intercept_bo
   # Create equally sized folds with balanced sample sized
   folds <- createFolds(Y, k = k_outer) # indices for each fold
 
-  perf_alphas <- (matrix(ncol = 5, nrow = length(seq(0,1,0.1)*10)*10*2))
+  perf_alphas <- matrix(ncol = 5, nrow = length(seq(0,1,0.1))*10*2)
   id <- 1
 
   for(alpha in seq(0,1,0.1)){
@@ -39,13 +39,11 @@ testAlphas <- function(X, Y, sample_info, k_outer, k_inner, family, intercept_bo
       ### INNER
       cvfit <- cv.glmnet(x = X[-fold,], y = Y[-fold], family = family,  intercept = intercept_bool,
                          nfolds = k_inner, alpha = alpha,  standardize = F, trace.it = T, parallel = T)
-      # cvfit <- cv.glmnet(x = X[-fold,], y = Y[-fold], family = "poisson",  intercept = T,
-                         # nfolds = 10, alpha = alpha,  standardize = F, trace.it = T, parallel = T)
       # Apply model to test dataset for the specific fold
-      prediction_test_min <- predict(cvfit, type = "response", newx = testData[,2:ncol(testData)], s = cvfit$lambda.min)
-      prediction_test_1se <- predict(cvfit, type = "response", newx = testData[,2:ncol(testData)], s = cvfit$lambda.1se)
-      perf_alphas[id,] <-  c(alpha,"min", i,  median(abs(prediction_test_min - testData[,1])), cor.test(prediction_test_min,testData[,1])$estimate)
-      perf_alphas[id+1,] <-  c(alpha,"1se", i,  median(abs(prediction_test_1se - testData[,1])), cor.test(prediction_test_1se,testData[,1])$estimate)
+      prediction_test_min <- predict(cvfit, type = "response", newx =  X[fold,], s = cvfit$lambda.min)
+      prediction_test_1se <- predict(cvfit, type = "response", newx =  X[fold,], s = cvfit$lambda.1se)
+      perf_alphas[id,] <-  c(alpha,"min", i,  median(abs(prediction_test_min - Y[fold])), cor.test(prediction_test_min, Y[fold])$estimate) 
+      perf_alphas[id+1,] <-  c(alpha,"1se", i,  median(abs(prediction_test_1se - Y[fold])), cor.test(prediction_test_1se, Y[fold])$estimate) 
       id <- id + 1
     }
   }

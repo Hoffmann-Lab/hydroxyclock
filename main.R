@@ -17,7 +17,8 @@ import_matrix <- fread("hg38_2000bp_bins_woBl_wPeakOl_Cui_He_featureMatrix_norma
 sample_info_df <- import_matrix[,c("tissue", "gender", "dataset")]
 Y <-  import_matrix[,"age"]
 X <- as.matrix(import_matrix[,!colnames(import_matrix) %in% c("tissue", "gender", "dataset", "age")])
-
+# remove features with bins on X- and Y-chromosome 
+X <- X[,!grepl("chrY|chrX",colnames(X))]
 
 # Hyperparameter Optimization
 
