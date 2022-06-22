@@ -3,6 +3,11 @@ library(glmnet)
 library(doParallel)
 library(caret)
 library(data.table)
+library(dplyr) 
+library(gridExtra)
+library(pals)
+library(rtracklayer)
+
 
 source("bin/testHyperparameters.R")
 source("bin/loocv.R")
